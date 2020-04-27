@@ -1,0 +1,160 @@
+{% extends 'base.html' %}
+
+{% block title%}
+{% endblock%}
+
+
+{% block content %}
+<body>
+
+<style>
+.coordinates {
+background: rgba(0, 0, 0, 0.5);
+color: #fff;
+position: absolute;
+bottom: 40px;
+left: 65px;
+padding: 5px 10px;
+margin: 20;
+font-size: 11px;
+line-height: 18px;
+border-radius: 3px;
+display: none;
+}
+#map { 
+font-family: Century Gothic,CenturyGothic,AppleGothic,sans-serif; 
+color: #ffffff; 
+font-size: 18px; 
+font-weight: 400; 
+text-align: center; 
+background: #889ccf; 
+margin: 0 0 25px; 
+overflow: hidden; 
+padding: 150px; 
+border: 2px solid #5878ca;}
+</style>
+
+<div class="container-contact100">
+		<div class="wrap-contact100">
+			<form id="form" class="contact100-form validate-form" action="" method="post" enctype="multipart/form-data">
+				{% csrf_token %}
+				<span class="contact100-form-title">
+					FORMULARIO DE REGISTRO 
+				</span>
+
+                <div class="wrap-input100 validate-input bg1">
+					<span class="input100">NOMBRE *</span>
+
+					<div class="input100" type="text" name="name"> {{form.nombre}} </div>
+				</div>
+
+				<div class="wrap-input100 validate-input bg1" >
+					<span class="input100">DIRECCIÓN *</span>
+					<div class="input100" type="text" name="email" > {{form.direccion}} </div>
+				</div>
+
+				<div class="wrap-input100 validate-input bg1" >
+					<span class="input100">TELÉFONO DE CONTACTO </span>
+					<div class="input100" type="text" name="phone"> {{form.telefono}} </div>
+				</div>
+
+				<div class="wrap-input100 validate-input bg1">
+					<span class="input100">FOTO DEL DOMICILIO <br /></span>
+					<div align="left" style = "font-family:times;">
+					Seleccione la imagen en formato(.jpg/.png/.jpeg)  
+					</div>
+					{{form.foto_casa}}
+				</div>
+
+                <div class="wrap-input100 bg1 rs1-wrap-input100">
+					<span class="input100">TIPO DE APOYO REQUERIDO *</span>
+					<div class="input100" type="text" name="phone" > {{form.tipo_apoyo}} </div>
+				</div>
+
+                <div class="wrap-input100 bg1 rs1-wrap-input100">
+					<span class="input100">NÚMERO DE PERSONAS *</span>
+					<div class="input100" type="text" name="phone" > {{form.nro_personas}} </div>
+				</div>
+
+				<div class="wrap-input100 validate-input bg1">
+					<span class="input100" id="local">LOCALIZACIÓN *</span><p>
+ 
+					<div align="center" style = "font-family:times;">
+					Arrastre el cursor para seleccionar la ubicación deseada
+					</div>
+					<div id="map"></div>
+					<pre id="coordinates" class="coordinates"></pre>
+				</div>
+
+
+					<div align="center" class="wrap-input100 bg1 rs1-wrap-input100">
+						 <div class="input100" >Latitud * {{form.latitud}}</div>
+					 </div>
+					 <div align="center" class="wrap-input100 bg1 rs1-wrap-input100">
+						 <div class="input100" >Longitud * {{form.longitud}}</div>
+					 </div>
+
+				<div class="wrap-input100 validate-input bg0 rs1-alert-validate" >
+					<span class="input100">COMENTARIOS ADICIONALES</span>
+					<div class="input100" >{{form.comentario}}</div>
+                </div>
+				<div align="center" style = "font-family:times;">
+					* (Campos obligatorios) 
+				</div>
+
+				<div class="container-contact100-form-btn">
+				
+					<button class="contact100-form-btn" type="submit">
+						<span>
+							GUARDAR
+							<i class="fa fa-long-arrow-right m-l-7" aria-hidden="true"></i>
+						</span>
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</body>
+
+{% endblock %}
+
+{% block javascript %}
+{% load static %}
+
+<script language="javascript">
+mapboxgl.accessToken = 'pk.eyJ1IjoibGNzMjQ3IiwiYSI6ImNrOHhndnlvbTB2ZnEzbHNmenV5YzdrZmYifQ.hB-6wLo80m4Pl0-LQgUBiA';
+var coordinates = document.getElementById('coordinates');
+var map = new mapboxgl.Map({
+container: 'map',
+style: 'mapbox://styles/mapbox/streets-v11',
+center: [-78.750,-2.131],
+zoom: 6
+});
+ 
+var marker = new mapboxgl.Marker({
+draggable: true
+})
+.setLngLat([-78.750,-2.131])
+.addTo(map);
+ 
+function onDragEnd() {
+	
+var lngLat = marker.getLngLat();
+coordinates.style.display = 'block';
+document.getElementById("lat").value=lngLat.lat;
+document.getElementById("long").value=lngLat.lng;
+
+coordinates.innerHTML =
+'Latitud: ' + lngLat.lat + '<br />Longitud: ' + lngLat.lng;
+}
+ 
+marker.on('dragend', onDragEnd);
+
+
+map.addControl(new mapboxgl.NavigationControl()); 
+
+
+</script>
+{% endblock %}
+
+

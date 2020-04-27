@@ -1,0 +1,473 @@
+{% extends 'base.html' %}
+
+{% block title%}
+{% endblock%}
+
+{% block javascript %}
+{% load static %}
+
+<script>
+
+ (function($) {
+  
+  var array=[];
+  var places=[];
+  var places_v=[];
+  var places_r=[];
+  var lat=[];
+  var lat_v=[];
+  var lat_r=[];
+  var long=[];
+  var long_v=[];
+  var long_r=[];
+  var estado=[];
+  var estado_v=[];
+  var estado_r=[];
+  var nombre=[];
+  var nombre_v=[];
+  var nombre_r=[];
+  var telefono=[];
+  var telefono_v=[];
+  var telefono_r=[];
+  var personas=[];
+  var personas_v=[];
+  var personas_r=[];
+  var apoyo=[];
+  var apoyo_v=[];
+  var apoyo_r=[];
+  ccr=0;
+  ccv=0;
+  
+ ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+ //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+ /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  var form = $(this).closest("form");
+
+          $.ajax({
+            url: '{% url "vista_listado_mapa" %}',
+            data: form.serialize(),
+            dataType: 'json',
+            success: function (data) {
+                 array =$.parseJSON(data.listado);
+                 limite=array.length-1;
+                 contador_r=0;
+                 contador_v=0;
+                 
+                 for (i=0;i<=limite;i++){
+                    lat[i]=array[i].fields.latitud;
+                    long[i]=array[i].fields.longitud;
+                    estado[i]=array[i].fields.estado;
+                    nombre[i]=array[i].fields.nombre;
+                    telefono[i]=array[i].fields.telefono;
+                    personas[i]=array[i].fields.nro_personas;
+                    apoyo[i]=array[i].fields.tipo_apoyo;
+
+                    if (estado[i]=='Si'){
+                         estado_v[contador_v]=estado[i];
+                         lat_v[contador_v]=lat[i];
+                         long_v[contador_v]=long[i];
+                         nombre_v[contador_v]=nombre[i];
+                         telefono_v[contador_v]=telefono[i];
+                         personas_v[contador_v]=personas[i];
+                         apoyo_v[contador_v]=apoyo[i];
+                         contador_v=contador_v+1;                       
+                    }
+                 }
+                 for (i=0;i<=limite;i++){
+                    lat[i]=array[i].fields.latitud;
+                    long[i]=array[i].fields.longitud;
+                    estado[i]=array[i].fields.estado;
+                    nombre[i]=array[i].fields.nombre;
+                    telefono[i]=array[i].fields.telefono;
+                    personas[i]=array[i].fields.nro_personas;
+                    apoyo[i]=array[i].fields.tipo_apoyo;
+                    if (estado[i]=='No'){
+                         estado_r[contador_r]=estado[i];
+                         lat_r[contador_r]=lat[i];
+                         long_r[contador_r]=long[i];
+                         nombre_r[contador_r]=nombre[i];
+                         telefono_r[contador_r]=telefono[i];
+                         personas_r[contador_r]=personas[i];
+                         apoyo_r[contador_r]=apoyo[i];
+                         contador_r=contador_r+1;
+                    }
+                 }
+                 
+                 for (i=0;i<=limite;i++){
+
+                 places[i]= {'type': 'Feature',
+                              'properties': {'title'      : 'S/N'},
+                              'geometry'  : {'type'       : 'Point',
+                                             'coordinates': [-78.96,-4.06]}
+                               }
+                 }
+
+                 for (i=0;i<=estado_r.length-1;i++){
+
+                 places_r[i]= {'type': 'Feature',
+                              'properties': {'title'      : 'S/N'},
+                              'geometry'  : {'type'       : 'Point',
+                                             'coordinates': [0,0]}
+                               }
+                 }
+
+                 for (i=0;i<=estado_v.length-1;i++){
+                 places_v[i]= {'type': 'Feature',
+                              'properties': {'title'      : 'S/N'},
+                              'geometry'  : {'type'       : 'Point',
+                                             'coordinates': [0,0]}
+                               }
+                }             
+
+                  for (i=0;i<=limite;i++){
+                       places[i].properties.title=estado[i];
+                       places[i].geometry.coordinates[0]=long[i];
+                       places[i].geometry.coordinates[1]=lat[i];
+                  }
+
+                 for (i=0;i<=estado_r.length-1;i++){
+                       places_r[i].properties.title=estado_r[i];
+                       places_r[i].geometry.coordinates[0]=long_r[i];
+                       places_r[i].geometry.coordinates[1]=lat_r[i];
+                 }
+
+                 for (i=0;i<=estado_v.length-1;i++){
+                       places_v[i].properties.title=estado_v[i];
+                       places_v[i].geometry.coordinates[0]=long_v[i];
+                       places_v[i].geometry.coordinates[1]=lat_v[i];
+                 }
+                  ccr=contador_r;
+                  ccv=contador_v;
+                  coordinates.style.display = 'block';
+                  coordinates.innerHTML ='NO DESPACHADOS: '+ ccr +'<br />DESPACHADOS: '+ ccv;
+                  return places,places_r,places_v,lat,long,lat_v,long_v,lat_r,long_r,nombre,nombre_r,nombre_v,telefono,telefono_r,telefono_v,personas,personas_r,personas_v,apoyo,apoyo_r,apoyo_v                  
+            }
+          }); 
+                      
+{% comment %} console.log('latitudes',lat);
+console.log('longitudes',long);
+console.log('places_r',places_r);
+console.log('places_v',places_v);
+console.log('ccv',ccv);
+console.log('ccr',ccr);
+console.log('latitudes verde',lat_v);
+console.log('longitudes verde',long_v);
+console.log('latitudes rojo',lat_r);
+console.log('longitudes rojo',long_r); 
+console.log('nombre r',nombre);
+console.log('telefono',telefono);
+console.log('apoyo',apoyo);
+console.log('personas',personas);
+console.log('nombre r',nombre_r);
+console.log('nombre v',nombre_v);
+console.log('telefono r',telefono_r);
+console.log('telefono v',telefono_v); 
+console.log('apoyo_r',apoyo_r);
+console.log('apoyo_v',apoyo_v);
+console.log('personas_r',personas_r);
+console.log('personas_v',personas_v); {% endcomment %}
+
+mapboxgl.accessToken = 'pk.eyJ1IjoibGNzMjQ3IiwiYSI6ImNrOHhndnlvbTB2ZnEzbHNmenV5YzdrZmYifQ.hB-6wLo80m4Pl0-LQgUBiA';
+var map = new mapboxgl.Map({
+container: 'map',
+style: 'mapbox://styles/mapbox/streets-v11',
+center: [-78.750,-2.131],
+zoom: 6
+});
+
+var size = 200;
+
+// implementation of CustomLayerInterface to draw a pulsing dot icon on the map
+// see https://docs.mapbox.com/mapbox-gl-js/api/#customlayerinterface for more info
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////// UBICACIONES ///////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////// PUNTOS VERDES ///////////////////////////////////////////////////////////
+var pulsingDot = {
+width: size,
+height: size,
+data: new Uint8Array(size * size * 4),
+
+// get rendering context for the map canvas when layer is added to the map
+onAdd: function() {
+var canvas = document.createElement('canvas');
+canvas.width = this.width;
+canvas.height = this.height;
+this.context = canvas.getContext('2d');
+},
+
+// called once before every frame where the icon will be used
+render: function() {
+var duration = 1000;
+var t = (performance.now() % duration) / duration;
+
+var radius = (size / 2) * 0.3;
+var outerRadius = (size / 2) * 0.7 * t + radius;
+var context = this.context;
+
+// draw outer circle
+context.clearRect(0, 0, this.width, this.height);
+context.beginPath();
+context.arc(
+this.width / 2,
+this.height / 2,
+outerRadius,
+0,
+Math.PI * 2
+);
+context.fillStyle = 'rgba(0, 143, 57,' + (1 - t) + ')';   //COLOR DEL AURA
+context.fill();
+
+// draw inner circle
+context.beginPath();
+context.arc(
+this.width / 2,
+this.height / 2,
+radius,
+0,
+Math.PI * 2
+);
+context.fillStyle = 'rgba(0, 143, 57, 1)';
+context.strokeStyle = 'white';
+context.lineWidth = 2 + 4 * (1 - t);
+context.fill();
+context.stroke();
+
+// update this image's data with data from the canvas
+this.data = context.getImageData(
+0,
+0,
+this.width,
+this.height
+).data;
+
+// continuously repaint the map, resulting in the smooth animation of the dot
+map.triggerRepaint();
+
+// return `true` to let the map know that the image was updated
+return true;
+}
+};
+
+/////////////////////////////////////////// PUNTOS ROJOS //////////////////////////////////////////////////////////////
+
+var pulsingDot22 = {
+width: size,
+height: size,
+data: new Uint8Array(size * size * 4),
+
+// get rendering context for the map canvas when layer is added to the map
+onAdd: function() {
+var canvas = document.createElement('canvas');
+canvas.width = this.width;
+canvas.height = this.height;
+this.context = canvas.getContext('2d');
+},
+
+// called once before every frame where the icon will be used
+render: function() {
+var duration = 1000;
+var t = (performance.now() % duration) / duration;
+
+var radius = (size / 2) * 0.3;
+var outerRadius = (size / 2) * 0.7 * t + radius;
+var context = this.context;
+
+// draw outer circle
+context.clearRect(0, 0, this.width, this.height);
+context.beginPath();
+context.arc(
+this.width / 2,
+this.height / 2,
+outerRadius,
+0,
+Math.PI * 2
+);
+context.fillStyle = 'rgba(255, 0, 0,' + (1 - t) + ')';   //COLOR DEL AURA
+context.fill();
+
+// draw inner circle
+context.beginPath();
+context.arc(
+this.width / 2,
+this.height / 2,
+radius,
+0,
+Math.PI * 2
+);
+context.fillStyle = 'rgba(255, 0, 0, 1)';
+context.strokeStyle = 'white';
+context.lineWidth = 2 + 4 * (1 - t);
+context.fill();
+context.stroke();
+
+// update this image's data with data from the canvas
+this.data = context.getImageData(
+0,
+0,
+this.width,
+this.height
+).data;
+
+// continuously repaint the map, resulting in the smooth animation of the dot
+map.triggerRepaint();
+
+// return `true` to let the map know that the image was updated
+return true;
+}
+};
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////// DECLARACIÓN DE FUNCIONES////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/////////////////////////////////////// PUNTOS ROJOS//////////////////////////////////////////////////////////////////
+map.addControl(new mapboxgl.NavigationControl()); 
+
+function punto_rojo() {
+map.addImage('pulsing-dot2', pulsingDot22, { pixelRatio: 5 });
+
+map.addSource('puntos', {
+'type': 'geojson',
+'data': { 'type'      : 'FeatureCollection',
+          'features'  : places_r
+}
+});
+
+
+map.addLayer({
+    'id': 'puntos',
+    'type': 'symbol',
+    'source': 'puntos',
+    'layout': {
+                'icon-image': 'pulsing-dot2',
+                'text-field': ['get', 'title'],
+                'text-font': ['Open Sans Semibold', 'Arial Unicode MS Bold'],
+                'text-offset': [0, 0.6],
+                'text-anchor': 'top'
+               }
+            });
+
+                 for (i=0;i<=ccr-1;i++){                                
+                   var popup = new mapboxgl.Popup({ closeOnClick: false })
+                   .setLngLat({lon:long_r[i],lat:lat_r[i]})
+                   .setHTML('<div id="info_r'+i+'" href="#"><img id="img_r'+i+'" src="https://cdn.pixabay.com/photo/2017/06/14/12/58/heart-2402086_960_720.png" width=50 height=50 onClick="rojos('+i+')" /></div>')
+                   .addTo(map); 
+                                     
+                }
+                
+                window.rojos = function(numero) {
+                     $("#info_r"+numero).html("");     
+                     $("#info_r"+numero).append("<div> Nombre: "+nombre_r[numero]+"<br /> Tipo de apoyo: "+apoyo_r[numero]+"<br /> Número de personas: "+personas_r[numero]+"<br /> Teléfono: "+telefono_r[numero]+"</div>");
+			          };
+
+
+           }
+         
+/////////////////////////////////////////// PUNTOS VERDES ///////////////////////////////////////////////////////////
+
+function punto_verde() {
+map.addImage('pulsing-dot', pulsingDot, { pixelRatio: 5 });
+
+map.addSource('points', {
+  'type': 'geojson',
+  'data':  { 'type'      : 'FeatureCollection',
+          'features'  : places_v
+}
+  
+});      
+
+
+map.addLayer({
+    'id': 'points',
+    'type': 'symbol',
+    'source': 'points',
+    'layout': {
+                'icon-image': 'pulsing-dot',
+                'text-field': ['get', 'title'],
+                'text-font': ['Open Sans Semibold', 'Arial Unicode MS Bold'],
+                'text-offset': [0, 0.6],
+                'text-anchor': 'top'
+               }
+            });
+
+
+                for (i=0;i<=ccv-1;i++){                                
+                   var popup = new mapboxgl.Popup({ closeOnClick: false })
+                   .setLngLat({lon:long_v[i],lat:lat_v[i]})
+                   .setHTML('<div id="info_v'+i+'" href="#"><img id="img_v'+i+'"src="https://cdn.pixabay.com/photo/2013/07/13/12/07/heart-159223_960_720.png" width=50 height=50 onClick="verdes('+i+')" /></div>')
+                   .addTo(map); 
+                }
+                  
+                window.verdes = function(numero) {
+                    $("#info_v"+numero).html("");     
+                    $("#info_v"+numero).append("<div> Nombre: "+nombre_v[numero]+"<br /> Tipo de apoyo: "+apoyo_v[numero]+"<br /> Número de personas: "+personas_v[numero]+"<br /> Teléfono: "+telefono_v[numero]+"</div>");
+			          };
+                
+}
+
+$(document).ready(function() {
+$( "#sid" ).click(function() {      
+        punto_verde();
+        return false;
+})});
+
+map.on('load', function() {
+
+punto_rojo();
+
+});
+
+
+})(jQuery);
+
+</script>
+{% endblock %}
+
+{% block content %}
+<body>
+<style>
+   body { margin: 0; padding: 0; }
+   #map { position: absolute; top: 0; bottom: 0; width: 100%; }
+   #menu {position: absolute;  top: 8px; left:8px;  background: #fff; padding: 0; font-family: 'Open Sans', sans-serif;}
+   .boton_personalizado{
+    text-decoration: none;
+    padding: 10px;
+    font-weight: 600;
+    font-size: 20px;
+    color: #ffffff;
+    background-color: #1883ba;
+    border-radius: 6px;
+    border: 2px solid #0016b0;
+  }
+  .boton_personalizado:hover{
+    color: #1883ba;
+    background-color: #ffffff;
+  }
+  .coordinates {
+background: rgba(0, 0, 0, 0.5);
+color: #fff;
+position: absolute;
+bottom: 40px;
+left: 10px;
+padding: 5px 10px;
+margin: 0;
+font-size: 11px;
+line-height: 18px;
+border-radius: 3px;
+display: none;
+}
+  
+</style>
+
+<div id="map" ></div>
+<div id="menu">
+<button id="sid" class="boton_personalizado" type="submit">VER DESPACHADOS</button>
+</div>
+<pre id="coordinates" class="coordinates"></pre>
+</body>
+{% endblock %}

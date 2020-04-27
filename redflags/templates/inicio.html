@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title%}
+{% endblock%}
+
+{% block content %}
+{% load static %}
+
+<div class="container-contact100">
+		<div class="wrap-contact100">
+		<div class="container-fluid">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="row">
+					<div class="col-md-6">
+                    <center><h2>FORMULARIO</h2></center><br>
+					<center><a href='{% url "formulario" %}'><img alt="Bootstrap Image Preview" src="{% static 'images/form.jpg' %}" class="rounded-circle" /></center><br></a>
+					<p>
+						Ayuda a identificar en tu territorio quiénes necesitan ayuda en tiempos de COVID-19. Haz click en la imagen para comenzar con el registro.
+					</p>
+
+					</div>
+					<div class="col-md-6">
+                 	   <center><h2>MAPA</h2></center><br>
+						<center><a href='{% url "mapa" %}' ><img alt="Bootstrap Image Preview" src="{% static 'images/map.jpg' %}" class="rounded-circle" /></center><br></a>
+						<p>
+						Visualiza en el mapa los casos en necesidad y los casos de éxito del proyecto REDFLAG, así como la información de cada caso.
+						</p>
+
+					</div>
+				</div>
+			</div>
+		</div>
+		</div>
+    </div>
+</div>
+
+{% endblock %}
+

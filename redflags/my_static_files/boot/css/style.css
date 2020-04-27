@@ -1,0 +1,9 @@
+# Empty CSS file for your own CSS
+
+.grid-container {
+  display: grid;
+  grid-template-columns: 1fr 7fr 7fr 1fr;
+  grid-template-rows: 0.5fr 1fr 1fr;
+  gap: 1px 1px;
+  grid-template-areas: ". . . ." ". . . ." ". . . .";
+}
